@@ -1,0 +1,140 @@
+file_path = "/mnt/data/3d_network_visualization.html"
+html_content = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Network Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/3d-force-graph@1.69.0/dist/3d-force-graph.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <div id="3d-graph" style="width: 100vw; height: 100vh;"></div>
+    <script>
+        const data = {
+            nodes: [
+                { id: 1, label: "water insecurity", type: "social", color: "red" },
+                { id: 2, label: "memory of insecurity", type: "social", color: "red" },
+                { id: 3, label: "sand/earth dam", type: "adaptation", color: "purple" },
+                { id: 4, label: "water source extraction", type: "adaptation", color: "purple" },
+                { id: 5, label: "distance to water", type: "social", color: "red" },
+                { id: 6, label: "precipitation", type: "hydrological", color: "blue" },
+                { id: 7, label: "fast runoff reservoir", type: "hydrological", color: "blue" },
+                { id: 8, label: "baseflow reservoir", type: "hydrological", color: "blue" },
+                { id: 9, label: "forest area evaporation", type: "hydrological", color: "blue" },
+                { id: 10, label: "river discharge", type: "hydrological", color: "blue" },
+                { id: 11, label: "irrigation", type: "adaptation", color: "purple" },
+                { id: 12, label: "tree planting", type: "adaptation", color: "blue" },
+                { id: 13, label: "grassland evaporation", type: "hydrological", color: "blue" },
+                { id: 14, label: "crop choice", type: "adaptation", color: "purple" },
+                { id: 15, label: "cropland evaporation", type: "hydrological", color: "blue" },
+                { id: 16, label: "crop area", type: "adaptation", color: "purple" },
+                { id: 17, label: "gullies", type: "social", color: "red" },
+                { id: 18, label: "capital", type: "social", color: "red" },
+                { id: 19, label: "charcoal", type: "adaptation", color: "purple" },
+                { id: 20, label: "crop yield", type: "social", color: "red" },
+                { id: 21, label: "sand mining", type: "adaptation", color: "purple" },
+                { id: 22, label: "food insecurity", type: "social", color: "red" },
+                { id: 23, label: "food selling", type: "adaptation", color: "purple" },
+                { id: 24, label: "food stock", type: "social", color: "red" },
+                { id: 25, label: "days food will last", type: "social", color: "red" },
+                { id: 26, label: "food buying", type: "adaptation", color: "purple" },
+                { id: 27, label: "contour bunds", type: "adaptation", color: "purple" },
+                { id: 28, label: "soil moisture", type: "hydrological", color: "blue" }
+            ],
+            links: [
+                { source: 1, target: 2 },
+                { source: 2, target: 3 },
+                { source: 3, target: 7 },
+                { source: 4, target: 1 },
+                { source: 4, target: 5 },
+                { source: 4, target: 7 },
+                { source: 7, target: 4 },
+                { source: 4, target: 8 },
+                { source: 6, target: 28 },
+                { source: 6, target: 15 },
+                { source: 6, target: 14 },
+                { source: 13, target: 28 },
+                { source: 28, target: 13 },
+                { source: 28, target: 7 },
+                { source: 7, target: 8 },
+                { source: 7, target: 10 },
+                { source: 8, target: 10 },
+                { source: 9, target: 10 },
+                { source: 28, target: 9 },
+                { source: 9, target: 28 },
+                { source: 28, target: 16 },
+                { source: 16, target: 28 },
+                { source: 10, target: 3 },
+                { source: 10, target: 4 },
+                { source: 10, target: 11 },
+                { source: 18, target: 19 },
+                { source: 19, target: 18 },
+                { source: 10, target: 17 },
+                { source: 17, target: 16 },
+                { source: 14, target: 15 },
+                { source: 14, target: 20 },
+                { source: 21, target: 3 },
+                { source: 21, target: 18 },
+                { source: 18, target: 21 },
+                { source: 12, target: 9 },
+                { source: 19, target: 9 },
+                { source: 10, target: 18 },
+                { source: 11, target: 28 },
+                { source: 18, target: 11 },
+                { source: 19, target: 12 },
+                { source: 12, target: 19 },
+                { source: 20, target: 24 },
+                { source: 24, target: 25 },
+                { source: 25, target: 23 },
+                { source: 23, target: 24 },
+                { source: 24, target: 22 },
+                { source: 24, target: 21 },
+                { source: 18, target: 26 },
+                { source: 26, target: 18 },
+                { source: 27, target: 17 },
+                { source: 27, target: 28 },
+                { source: 27, target: 7 },
+                { source: 10, target: 27 },
+                { source: 22, target: 2 },
+                { source: 25, target: 26 },
+                { source: 26, target: 24 },
+                { source: 18, target: 23 },
+                { source: 23, target: 18 },
+                { source: 18, target: 24 },
+                { source: 24, target: 18 },
+                { source: 24, target: 19 },
+                { source: 18, target: 27 },
+                { source: 18, target: 14 }
+            ]
+        };
+
+        const Graph = ForceGraph3D()
+            (document.getElementById('3d-graph'))
+            .graphData(data)
+            .nodeLabel(node => `${node.label}`)
+            .nodeColor(node => node.color)
+            .nodeAutoColorBy('type')
+            .linkDirectionalArrowLength(5)
+            .linkDirectionalArrowRelPos(1)
+            .linkLabel(link => link.label)
+            .linkOpacity(0.5)
+            .backgroundColor('black');
+    </script>
+</body>
+</html>
+"""
+
+# Save the HTML content to the file
+with open(file_path, "w") as file:
+    file.write(html_content)
+
+file_path
